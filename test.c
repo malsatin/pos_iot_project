@@ -5,28 +5,29 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include "src/tea.c"
+// #include "src/tea.c"
+// #include "src/raiden.c"
 
-//extern uint64_t rdtsc(void) {
-//    uint32_t lo, hi;
-//
-//    __asm__ __volatile__ (
-//    "xorl %%eax,%%eax \n cpuid"
-//    :: :"%rax", "%rbx", "%rcx", "%rdx"
-//    );
-//
-//    __asm__ __volatile__ ("rdtsc":"=a" (lo), "=d" (hi));
-//
-//    return (uint64_t) hi << 32 | lo;
-//}
-//int main() {
-//    uint64_t a = rdtsc();
-//    uint64_t b = rdtsc();
-//
-//    printf("%lld\n", a);
-//    printf("%lld\n", b);
-//    printf("%lld\n", b - a);
-//}
+/*extern uint64_t rdtsc(void) {
+    uint32_t lo, hi;
+
+    __asm__ __volatile__ (
+    "xorl %%eax,%%eax \n cpuid"
+    :: :"%rax", "%rbx", "%rcx", "%rdx"
+    );
+
+    __asm__ __volatile__ ("rdtsc":"=a" (lo), "=d" (hi));
+
+    return (uint64_t) hi << 32 | lo;
+}
+int main() {
+    uint64_t a = rdtsc();
+    uint64_t b = rdtsc();
+
+    printf("%lld\n", a);
+    printf("%lld\n", b);
+    printf("%lld\n", b - a);
+}*/
 
 #define TEST_SAMPLES_COUNT 100 * 1000
 #define TEST_TRIALS_COUNT 20 * 1000 * 1000
@@ -38,7 +39,35 @@ long get_time_diff(struct timespec start, struct timespec end) {
     return 10e9 * (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec);
 }
 
-uint64_t test_tea(uint8_t texts[], uint8_t const key[16]) {
+/*uint64_t test_empty(uint8_t texts[], uint8_t const key[16]) {
+    struct timespec mt1, mt2;
+    uint64_t tt = 0;
+
+    uint32_t key_prep[4];
+    memcpy(key_prep, key, KEY_SIZE_BITS / BYTE_SIZE);
+
+    int p = 0;
+    for (int sx = 0; sx < TEST_TRIALS_COUNT; sx++) {
+        if(p >= TEST_SAMPLES_COUNT - 1) {
+            p = 0;
+        }
+
+        uint32_t enc_text[2];
+        uint32_t dec_text[2];
+        memcpy(enc_text, &texts[p], BLOCK_SIZE_BITS / BYTE_SIZE);
+        memcpy(dec_text, &texts[p + 1], BLOCK_SIZE_BITS / BYTE_SIZE);
+
+        clock_gettime(CLOCK_REALTIME, &mt1);
+        clock_gettime(CLOCK_REALTIME, &mt2);
+
+        tt += get_time_diff(mt1, mt2);
+        p++;
+    }
+
+    return tt;
+}*/
+
+/*uint64_t test_tea(uint8_t texts[], uint8_t const key[16]) {
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 
@@ -70,7 +99,41 @@ uint64_t test_tea(uint8_t texts[], uint8_t const key[16]) {
     }
 
     return tt;
-}
+}*/
+
+/*uint64_t test_raiden(uint8_t texts[], uint8_t const key[16]) {
+    struct timespec mt1, mt2;
+    uint64_t tt = 0;
+
+    uint32_t key_prep[4];
+    memcpy(key_prep, key, KEY_SIZE_BITS / BYTE_SIZE);
+
+    int p = 0;
+    for (int sx = 0; sx < TEST_TRIALS_COUNT; sx++) {
+        if(p >= TEST_SAMPLES_COUNT - 1) {
+            p = 0;
+        }
+
+        uint32_t enc_text[2];
+        uint32_t dec_text[2];
+        memcpy(enc_text, &texts[p], BLOCK_SIZE_BITS / BYTE_SIZE);
+        memcpy(dec_text, &texts[p + 1], BLOCK_SIZE_BITS / BYTE_SIZE);
+
+        clock_gettime(CLOCK_REALTIME, &mt1);
+
+        raiden_encode(enc_text, key_prep, enc_text);
+        raiden_decode(dec_text, key_prep, dec_text);
+        raiden_decode(enc_text, key_prep, enc_text);
+        raiden_encode(dec_text, key_prep, dec_text);
+
+        clock_gettime(CLOCK_REALTIME, &mt2);
+
+        tt += get_time_diff(mt1, mt2);
+        p++;
+    }
+
+    return tt;
+}*/
 
 int main() {
     // initialize texts with TEST_SAMPLES_COUNT + BLOCK_SIZE / uint8_t elements
@@ -87,7 +150,7 @@ int main() {
     gettimeofday(&tv, NULL);
     printf("Start: %ld s \n", tv.tv_sec);
 
-    uint64_t tt = test_tea(texts, key);
+    uint64_t tt = (texts, key);
     printf("Time spent: %lld ns \n", (unsigned long long) tt);
     printf("Time spent: %f s \n", (double) tt / 10e9);
 
