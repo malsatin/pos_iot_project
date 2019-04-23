@@ -4,15 +4,19 @@
 #include "../utils.c"
 #include "../params.h"
 
-//void present_encode(unsigned char* v, unsigned char* k) {
-//    present128ECB_encrypt(v, 64, k);
-//}
-//
-//void present_decode(unsigned char* v, unsigned char* k) {
-//    present128ECB_decrypt(v, 64, k);
-//}
+#define BLOCK_SIZE 8
+
+void present_encode(unsigned char *v, unsigned char *k) {
+    present128ECB_encrypt(v, BLOCK_SIZE, k);
+}
+
+void present_decode(unsigned char *v, unsigned char *k) {
+    present128ECB_decrypt(v, BLOCK_SIZE, k);
+}
 
 uint64_t test_present(uint8_t texts[], uint8_t const key[16]) {
+    printf("PRESENT \n");
+
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 
@@ -32,10 +36,10 @@ uint64_t test_present(uint8_t texts[], uint8_t const key[16]) {
 
         clock_gettime(CLOCK_REALTIME, &mt1);
 
-        present128ECB_encrypt(enc_text, 64, key_prep);
-        present128ECB_decrypt(dec_text, 64, key_prep);
-        present128ECB_decrypt(dec_text, 64, key_prep);
-        present128ECB_encrypt(enc_text, 64, key_prep);
+        present_encode(enc_text, key_prep);
+        present_decode(dec_text, key_prep);
+        present_decode(dec_text, key_prep);
+        present_encode(enc_text, key_prep);
 
         clock_gettime(CLOCK_REALTIME, &mt2);
 

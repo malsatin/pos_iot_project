@@ -6,15 +6,12 @@
 
 #define NUM_ROUNDS 32
 
-/* take 64 bits of data in v[0] and v[1] and 128 bits of key[0] - key[3] */
-
 void xtea_encode(uint32_t v[2], uint32_t const key[4]) {
     return encipher(NUM_ROUNDS, v, key);
 }
 
 void xtea_decode(uint32_t v[2], uint32_t const key[4]) {
     return decipher(NUM_ROUNDS, v, key);
-
 }
 
 uint64_t test_xtea(uint8_t texts[], uint8_t const key[16]) {
