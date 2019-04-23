@@ -4,14 +4,12 @@
 #include "../utils.c"
 #include "../params.h"
 
-#define BLOCK_SIZE 8
-
 void present_encode(unsigned char *v, unsigned char *k) {
-    present128ECB_encrypt(v, BLOCK_SIZE, k);
+    present128ECB_encrypt(v, BLOCK_SIZE_BYTES, k);
 }
 
 void present_decode(unsigned char *v, unsigned char *k) {
-    present128ECB_decrypt(v, BLOCK_SIZE, k);
+    present128ECB_decrypt(v, BLOCK_SIZE_BYTES, k);
 }
 
 uint64_t test_present(uint8_t texts[], uint8_t const key[16]) {
