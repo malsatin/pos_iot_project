@@ -1,5 +1,5 @@
 #include "PresentECB.h"
-#include "Present.h"
+#include "Present.c"
 
 void performBlockFunction(void (*blockFunction)(unsigned char *, const unsigned char *), unsigned char *message,
                           const unsigned int messageLength, const unsigned char *key) {
@@ -7,6 +7,7 @@ void performBlockFunction(void (*blockFunction)(unsigned char *, const unsigned 
 
     while (offset < messageLength) {
         blockFunction(&message[offset], key);
+
         offset += PRESENT_BLOCK_SIZE_BYTES;
     }
 }

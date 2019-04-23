@@ -8,10 +8,12 @@
 #include "src/params.h"
 #include "src/sound.c"
 
-#include "src/algorithms/empty.c"
+//#include "src/algorithms/empty.c"
 //#include "src/algorithms/tea.c"
 //#include "src/algorithms/raiden.c"
 //#include "src/algorithms/present.c"
+//#include "src/algorithms/tiny_aes.c"
+//#include "src/algorithms/blowfish.c"
 //#include "src/algorithms/tiny_aes.c"
 
 int main() {
@@ -31,7 +33,7 @@ int main() {
     long time_start = tv.tv_sec;
     printf("Start: %ld s \n", tv.tv_sec);
 
-    uint64_t tt = test_empty(texts, key); // Runs actual test
+    //uint64_t tt = test_present(texts, key); // Runs actual test
 
     printf("Time spent: %lld ns \n", (unsigned long long) tt);
     printf("Time spent: %f s \n", (double) tt / SECOND_NANOSEC);
