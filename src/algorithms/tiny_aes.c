@@ -19,6 +19,8 @@
 //}
 
 uint64_t test_tiny_aes(uint8_t texts[], uint8_t const key[16]) {
+    printf("Tiny AES \n");
+
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 

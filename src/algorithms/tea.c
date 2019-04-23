@@ -34,6 +34,8 @@ void tea_decode(uint32_t v[2], uint32_t k[4]) {
 }
 
 uint64_t test_tea(uint8_t texts[], uint8_t const key[16]) {
+    printf("TEA \n");
+
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 

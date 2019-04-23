@@ -38,6 +38,8 @@ void raiden_decode(const uint32_t key[4], const uint32_t data[2], uint32_t resul
 }
 
 uint64_t test_raiden(uint8_t texts[], uint8_t const key[16]) {
+    printf("Raiden \n");
+
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 

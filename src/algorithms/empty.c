@@ -4,6 +4,8 @@
 #include "../params.h"
 
 uint64_t test_empty(uint8_t texts[], uint8_t const key[16]) {
+    printf("Empty \n");
+
     struct timespec mt1, mt2;
     uint64_t tt = 0;
 
