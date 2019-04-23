@@ -1,5 +1,8 @@
 #include <stdint.h>
 
+#include "../utils.c"
+#include "../params.h"
+
 void raiden_encode(const uint32_t key[4], const uint32_t data[2], uint32_t result[2]) {
     uint32_t b0 = data[0], b1 = data[1], k[4] = {key[0], key[1], key[2], key[3]}, sk;
     int i;
@@ -13,7 +16,6 @@ void raiden_encode(const uint32_t key[4], const uint32_t data[2], uint32_t resul
     result[0] = b0;
     result[1] = b1;
 }
-
 
 void raiden_decode(const uint32_t key[4], const uint32_t data[2], uint32_t result[2]) {
     uint32_t b0 = data[0], b1 = data[1], k[4] = {key[0], key[1], key[2], key[3]}, subkeys[16];
@@ -33,4 +35,38 @@ void raiden_decode(const uint32_t key[4], const uint32_t data[2], uint32_t resul
 
     result[0] = b0;
     result[1] = b1;
+}
+
+uint64_t test_raiden(uint8_t texts[], uint8_t const key[16]) {
+    struct timespec mt1, mt2;
+    uint64_t tt = 0;
+
+    uint32_t key_prep[4];
+    memcpy(key_prep, key, KEY_SIZE_BITS / BYTE_SIZE);
+
+    int p = 0;
+    for (int sx = 0; sx < TEST_TRIALS_COUNT; sx++) {
+        if (p >= TEST_SAMPLES_COUNT - 1) {
+            p = 0;
+        }
+
+        uint32_t enc_text[2];
+        uint32_t dec_text[2];
+        memcpy(enc_text, &texts[p], BLOCK_SIZE_BITS / BYTE_SIZE);
+        memcpy(dec_text, &texts[p + 1], BLOCK_SIZE_BITS / BYTE_SIZE);
+
+        clock_gettime(CLOCK_REALTIME, &mt1);
+
+        raiden_encode(enc_text, key_prep, enc_text);
+        raiden_decode(dec_text, key_prep, dec_text);
+        raiden_decode(enc_text, key_prep, enc_text);
+        raiden_encode(dec_text, key_prep, dec_text);
+
+        clock_gettime(CLOCK_REALTIME, &mt2);
+
+        tt += get_time_diff(mt1, mt2);
+        p++;
+    }
+
+    return tt;
 }
